@@ -1,5 +1,6 @@
 const BCDice = require('bcdice-js').BCDice; // CommonJS
 const bcdice = new BCDice();
+var weather = require('weather-js');
 
 function calldice(gameType, message) {
 	bcdice.setGameByTitle(gameType)
@@ -46,8 +47,15 @@ rollDiceCommand = function (inputStr, mainMsg, groupid, userid, userrole, botnam
 	let result = '';
 	switch (true) {
 		case /^help$/i.test(mainMsg[1]) || !mainMsg[1]:
-			rply.text = this.getHelpMessage();
-			return rply;
+			weather.find({ search: 'San Francisco, CA', degreeType: 'F' }, function (err, result) {
+				if (err) console.log(err);
+
+				console.log();
+				rply.text = result[0].current.temperature
+				return rply;
+			});
+			break;
+
 		case /(\d+dx|ET)/i.test(mainMsg[1]):
 			result = calldice("DoubleCross", mainMsg[1])
 			if (result && result[0] != 1)
